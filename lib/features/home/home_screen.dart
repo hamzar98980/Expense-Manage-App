@@ -2,153 +2,127 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
+import '../../Components/app_bottom_nav_bar.dart';
+import '../../Components/category_card.dart';
 import '../../utils/constcolors.dart';
 import 'home_controller.dart';
 
-/// Teal dashboard palette (reference UI).
-abstract final class _HomeColors {
-  static const header = Color(0xFF2A9D90);
-  static const card = Color(0xFF267A70);
-  static const notificationSurface = Color(0x40FFFFFF);
+abstract final class _HomeUi {
+  /// Large top radius so the white sheet reads like the reference (slides up from bottom).
+  static const sheetTopRadius = 40.0;
   static const badge = Color(0xFFFF8C42);
-  static const labelMuted = Color(0xCCFFFFFF);
-}
-
-class _TealPatternPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final p = Paint()..color = Colors.white.withValues(alpha: 0.07);
-    canvas.drawCircle(Offset(size.width * 0.88, size.height * 0.05), 72, p);
-    canvas.drawCircle(Offset(size.width * -0.05, size.height * 0.55), 100, p);
-    canvas.drawCircle(Offset(size.width * 0.45, size.height * 0.15), 48, p);
-    canvas.drawCircle(Offset(size.width * 0.75, size.height * 0.65), 56, p);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 class HomeScreen extends GetView<HomeController> {
   const HomeScreen({super.key});
 
-  static const _headerBottomRadius = 32.0;
   static const _horizontalPad = 20.0;
-  static const _cardRadius = 24.0;
-  /// Vertical space for greeting + name (two lines + spacing).
-  static const _greetingBlockHeight = 48.0;
-  static const _gapBelowName = 48.0;
-  /// Half of approximate card height — card straddles teal / white at this depth.
-  static const _cardHalfOverlap = 108.0;
-  /// Fixed height for horizontal balance list (card content + shadow).
-  static const _balanceCarouselHeight = 248.0;
+  static const _cardRadius = 20.0;
+  /// Height for one balance card (header → income/expenses).
+  static const _balanceCarouselHeight = 230.0;
   static const _cardCarouselGap = 14.0;
+  /// Card width as fraction of screen so the next card peeks (horizontal slider).
+  static const _cardWidthFraction = 0.78;
+  static const _categoryGridSpacing = 12.0;
+  static const _categoryCardAspect = 1.50;
 
   @override
   Widget build(BuildContext context) {
     final topInset = MediaQuery.paddingOf(context).top;
-    final tealSectionHeight = topInset +
-        5 +
-        _greetingBlockHeight +
-        _gapBelowName +
-        _cardHalfOverlap;
     final screenW = MediaQuery.sizeOf(context).width;
-    final cardWidth = screenW - (_horizontalPad * 2);
+    final cardWidth = screenW * _cardWidthFraction;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.light,
+      value: SystemUiOverlayStyle.dark,
       child: Scaffold(
-        backgroundColor: ConstColor.Secondaycolor,
+        backgroundColor: ConstColor.Thirdcolor,
+        bottomNavigationBar: Obx(
+          () => AppBottomNavBar(
+            currentIndex: controller.bottomNavIndex.value,
+            onTap: controller.selectBottomNav,
+          ),
+        ),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SizedBox(
-              height: tealSectionHeight,
-              child: Stack(
-                clipBehavior: Clip.none,
+            Padding(
+              padding: EdgeInsets.fromLTRB(
+                _horizontalPad,
+                topInset + 8,
+                _horizontalPad,
+                20,
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Positioned.fill(
-                    child: ClipRRect(
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(_headerBottomRadius),
-                        bottomRight: Radius.circular(_headerBottomRadius),
-                      ),
-                      child: ColoredBox(
-                        color: _HomeColors.header,
-                        child: CustomPaint(
-                          painter: _TealPatternPainter(),
-                          child: const SizedBox.expand(),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    top: topInset + 4,
-                    left: _horizontalPad,
-                    right: _horizontalPad,
-                    child: Row(
+                  Expanded(
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                controller.timeGreeting,
-                                style: const TextStyle(
-                                  fontFamily: 'Montserrat',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.white,
-                                  height: 1.2,
-                                ),
-                              ),
-                              const SizedBox(height: 6),
-                              const Text(
-                                HomeController.userName,
-                                style: TextStyle(
-                                  fontFamily: 'Montserrat',
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.white,
-                                  height: 1.15,
-                                ),
-                              ),
-                            ],
+                        Text(
+                          'Good',
+                          style: TextStyle(
+                            fontFamily: 'Montserrat',
+                            fontSize: 26,
+                            fontWeight: FontWeight.w700,
+                            height: 1.05,
+                            color: ConstColor.Primarycolor,
                           ),
                         ),
-                        IconButton(
-                          onPressed: () {},
-                          style: IconButton.styleFrom(
-                            backgroundColor: _HomeColors.notificationSurface,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.all(10),
-                            minimumSize: const Size(48, 48),
-                            maximumSize: const Size(48, 48),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14),
-                            ),
+                        Text(
+                          'morning,',
+                          style: TextStyle(
+                            fontFamily: 'Montserrat',
+                            fontSize: 26,
+                            fontWeight: FontWeight.w400,
+                            height: 1.05,
+                            color: Colors.grey.shade600,
                           ),
-                          icon: Stack(
-                            clipBehavior: Clip.none,
-                            alignment: Alignment.center,
-                            children: [
-                              const Icon(
-                                Icons.notifications_outlined,
-                                size: 24,
-                              ),
-                              Positioned(
-                                top: 2,
-                                right: 2,
-                                child: Container(
-                                  width: 8,
-                                  height: 8,
-                                  decoration: const BoxDecoration(
-                                    color: _HomeColors.badge,
-                                    shape: BoxShape.circle,
-                                  ),
-                                ),
-                              ),
-                            ],
+                        ),
+                        const SizedBox(height: 10),
+                        const Text(
+                          HomeController.userName,
+                          style: TextStyle(
+                            fontFamily: 'Montserrat',
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                            height: 1.2,
+                            color: ConstColor.Primarycolor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {},
+                    style: IconButton.styleFrom(
+                      backgroundColor: ConstColor.Primarycolor,
+                      foregroundColor: ConstColor.Secondaycolor,
+                      padding: const EdgeInsets.all(10),
+                      minimumSize: const Size(48, 48),
+                      maximumSize: const Size(48, 48),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                    icon: Stack(
+                      clipBehavior: Clip.none,
+                      alignment: Alignment.center,
+                      children: [
+                        const Icon(
+                          Icons.notifications_outlined,
+                          size: 24,
+                        ),
+                        Positioned(
+                          top: 2,
+                          right: 2,
+                          child: Container(
+                            width: 8,
+                            height: 8,
+                            decoration: const BoxDecoration(
+                              color: _HomeUi.badge,
+                              shape: BoxShape.circle,
+                            ),
                           ),
                         ),
                       ],
@@ -157,32 +131,146 @@ class HomeScreen extends GetView<HomeController> {
                 ],
               ),
             ),
-            Transform.translate(
-              offset: const Offset(0, -_cardHalfOverlap),
-              child: SizedBox(
-                height: _balanceCarouselHeight,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: _horizontalPad),
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: controller.balanceCards.length,
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(width: _cardCarouselGap),
-                  itemBuilder: (context, index) {
-                    return SizedBox(
-                      width: cardWidth,
-                      child: _BalanceCard(
-                        data: controller.balanceCards[index],
-                      ),
-                    );
-                  },
+            Expanded(
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: ConstColor.Secondaycolor,
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(_HomeUi.sheetTopRadius),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: ConstColor.Primarycolor.withValues(alpha: 0.06),
+                      blurRadius: 28,
+                      offset: const Offset(0, -6),
+                    ),
+                  ],
                 ),
-              ),
-            ),
-            const Expanded(
-              child: ColoredBox(
-                color: ConstColor.Secondaycolor,
-                child: SizedBox.expand(),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(_HomeUi.sheetTopRadius),
+                  ),
+                  child: SafeArea(
+                    top: false,
+                    child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(
+                            _horizontalPad,
+                            35,
+                            _horizontalPad,
+                            0,
+                          ),
+                          child: const Text(
+                            'Accounts',
+                            style: TextStyle(
+                              fontFamily: 'Montserrat',
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700,
+                              color: ConstColor.Primarycolor,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+                        SizedBox(
+                          height: _balanceCarouselHeight,
+                          child: ListView.separated(
+                            scrollDirection: Axis.horizontal,
+                            physics: const BouncingScrollPhysics(),
+                            padding: EdgeInsets.only(
+                              left: _horizontalPad,
+                              right: _horizontalPad * 0.35,
+                            ),
+                            itemCount: controller.balanceCards.length,
+                            separatorBuilder: (context, index) =>
+                                const SizedBox(width: _cardCarouselGap),
+                            itemBuilder: (context, index) {
+                              return SizedBox(
+                                width: cardWidth,
+                                child: _BalanceCard(
+                                  data: controller.balanceCards[index],
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(
+                            _horizontalPad,
+                            26,
+                            _horizontalPad,
+                            0,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text(
+                                    'Categories',
+                                    style: TextStyle(
+                                      fontFamily: 'Montserrat',
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500,
+                                      color: ConstColor.Primarycolor,
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    behavior: HitTestBehavior.opaque,
+                                    onTap: () {},
+                                    child: const Padding(
+                                      padding: EdgeInsets.only(top: 2),
+                                      child: Text(
+                                        'View all',
+                                        style: TextStyle(
+                                          fontFamily: 'Montserrat',
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                          color: ConstColor.Primarycolor,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 12),
+                              GridView.builder(
+                                padding: EdgeInsets.zero,
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  mainAxisSpacing: _categoryGridSpacing,
+                                  crossAxisSpacing: _categoryGridSpacing,
+                                  childAspectRatio: _categoryCardAspect,
+                                ),
+                                itemCount: controller.homeCategoryPreview.length,
+                                itemBuilder: (context, index) {
+                                  final c =
+                                      controller.homeCategoryPreview[index];
+                                  return CategoryCard(
+                                    title: c.title,
+                                    amount: c.amount,
+                                    icon: c.icon,
+                                    backgroundColor: c.backgroundColor,
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  ),
+                ),
               ),
             ),
           ],
@@ -200,82 +288,90 @@ class _BalanceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      elevation: 10,
+      elevation: 2,
       shadowColor: Colors.black26,
       borderRadius: BorderRadius.circular(HomeScreen._cardRadius),
-      color: _HomeColors.card,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 26, 16, 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              children: [
-                Text(
-                  data.headerLabel,
-                  style: const TextStyle(
-                    fontFamily: 'Montserrat',
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white,
+      color: ConstColor.Thirdcolor,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(HomeScreen._cardRadius),
+          border: Border.all(
+            color: ConstColor.Primarycolor.withValues(alpha: 0.08),
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 22, 16, 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    data.headerLabel,
+                    style: const TextStyle(
+                      fontFamily: 'Montserrat',
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: ConstColor.Primarycolor,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 4),
-                Icon(
-                  Icons.keyboard_arrow_down_rounded,
-                  color: Colors.white.withValues(alpha: 0.9),
-                  size: 22,
-                ),
-                const Spacer(),
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.more_horiz_rounded),
-                  color: Colors.white,
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(
-                    minWidth: 40,
-                    minHeight: 40,
+                  const SizedBox(width: 4),
+                  Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    color: ConstColor.Primarycolor.withValues(alpha: 0.85),
+                    size: 22,
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Text(
-              HomeController.formatUsd(data.totalBalance),
-              style: const TextStyle(
-                fontFamily: 'Montserrat',
-                fontSize: 32,
-                fontWeight: FontWeight.w700,
-                color: Colors.white,
-                letterSpacing: -0.5,
+                  const Spacer(),
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.more_horiz_rounded),
+                    color: ConstColor.Primarycolor,
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(
+                      minWidth: 40,
+                      minHeight: 40,
+                    ),
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                Expanded(
-                  child: _StatColumn(
-                    icon: Icons.arrow_downward_rounded,
-                    label: 'Income',
-                    amount: HomeController.formatUsd(data.income),
+              const SizedBox(height: 12),
+              Text(
+                HomeController.formatUsd(data.totalBalance),
+                style: const TextStyle(
+                  fontFamily: 'Montserrat',
+                  fontSize: 32,
+                  fontWeight: FontWeight.w700,
+                  color: ConstColor.Primarycolor,
+                  letterSpacing: -0.5,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  Expanded(
+                    child: _StatColumn(
+                      icon: Icons.arrow_downward_rounded,
+                      label: 'Income',
+                      amount: HomeController.formatUsd(data.income),
+                    ),
                   ),
-                ),
-                Container(
-                  width: 1,
-                  height: 44,
-                  margin: const EdgeInsets.symmetric(horizontal: 12),
-                  color: Colors.white.withValues(alpha: 0.2),
-                ),
-                Expanded(
-                  child: _StatColumn(
-                    icon: Icons.arrow_upward_rounded,
-                    label: 'Expenses',
-                    amount: HomeController.formatUsd(data.expenses),
+                  Container(
+                    width: 1,
+                    height: 44,
+                    margin: const EdgeInsets.symmetric(horizontal: 12),
+                    color: ConstColor.Primarycolor.withValues(alpha: 0.12),
                   ),
-                ),
-              ],
-            ),
-          ],
+                  Expanded(
+                    child: _StatColumn(
+                      icon: Icons.arrow_upward_rounded,
+                      label: 'Expenses',
+                      amount: HomeController.formatUsd(data.expenses),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -302,10 +398,10 @@ class _StatColumn extends StatelessWidget {
           width: 32,
           height: 32,
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.15),
+            color: ConstColor.Primarycolor.withValues(alpha: 0.08),
             shape: BoxShape.circle,
           ),
-          child: Icon(icon, color: Colors.white, size: 16),
+          child: Icon(icon, color: ConstColor.Primarycolor, size: 16),
         ),
         const SizedBox(width: 10),
         Expanded(
@@ -314,11 +410,11 @@ class _StatColumn extends StatelessWidget {
             children: [
               Text(
                 label,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'Montserrat',
                   fontSize: 13,
                   fontWeight: FontWeight.w400,
-                  color: _HomeColors.labelMuted,
+                  color: ConstColor.Primarycolor.withValues(alpha: 0.65),
                   height: 1.2,
                 ),
               ),
@@ -329,7 +425,7 @@ class _StatColumn extends StatelessWidget {
                   fontFamily: 'Montserrat',
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
-                  color: Colors.white,
+                  color: ConstColor.Primarycolor,
                 ),
               ),
             ],
