@@ -1,26 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../app/routes/app_routes.dart';
 import '../../utils/constcolors.dart';
 
 /// One scrollable wallet / balance card on the home screen.
 class WalletCardData {
   const WalletCardData({
     required this.headerLabel,
+    required this.accountType,
     required this.totalBalance,
-    required this.income,
-    required this.expenses,
   });
 
   final String headerLabel;
+  /// e.g. Cash, Bank, Debit — shown as small caption under the title.
+  final String accountType;
   final double totalBalance;
-  final double income;
-  final double expenses;
 }
 
 /// Home “Categories” grid row — expense uses [ConstColor.Thirdcolor], income [ConstColor.Fourthcolor].
 class HomeCategoryPreview {
   const HomeCategoryPreview({
+    required this.title,
+    required this.amount,
+    required this.icon,
+    required this.backgroundColor,
+  });
+
+  final String title;
+  final String amount;
+  final IconData icon;
+  final Color backgroundColor;
+}
+
+/// One transaction row preview for the home screen.
+/// Expense uses [ConstColor.Thirdcolor] and income uses [ConstColor.Fourthcolor].
+class HomeTransactionPreview {
+  const HomeTransactionPreview({
     required this.title,
     required this.amount,
     required this.icon,
@@ -40,31 +56,40 @@ class HomeController extends GetxController {
   void selectBottomNav(int index) {
     if (index == bottomNavIndex.value) return;
     bottomNavIndex.value = index;
-    // Wire navigation when Statistics / Wallet / Profile screens exist.
+
+    // Wallet tab -> Accounts screen (index mapping comes from
+    // AppBottomNavBar.defaultDestinations order).
+    if (index == 2) {
+      Get.toNamed(AppRoutes.accounts);
+      return;
+    }
+
+    // TODO: Add navigation for Statistics / Profile when those screens exist.
   }
 
   /// Placeholder until profile is loaded from auth/storage.
   static const String userName = 'Hamza Rashid';
 
+  /// Home summary row (Income / Expense cards under balance carousel).
+  static const double homeSummaryIncome = 18548.99;
+  static const double homeSummaryExpense = 1445.93;
+
   /// Multiple balances — horizontal carousel.
   final List<WalletCardData> balanceCards = const [
     WalletCardData(
       headerLabel: 'Total Balance',
+      accountType: 'Cash',
       totalBalance: 2548.00,
-      income: 1840.00,
-      expenses: 284.00,
     ),
     WalletCardData(
       headerLabel: 'Savings',
+      accountType: 'Bank',
       totalBalance: 12000.00,
-      income: 400.00,
-      expenses: 210.00,
     ),
     WalletCardData(
       headerLabel: 'Business',
+      accountType: 'Debit',
       totalBalance: 8320.50,
-      income: 2100.00,
-      expenses: 890.00,
     ),
   ];
 
@@ -91,6 +116,34 @@ class HomeController extends GetxController {
     HomeCategoryPreview(
       title: 'Freelance Income',
       amount: HomeController.formatUsd(290.50),
+      icon: Icons.laptop_mac_outlined,
+      backgroundColor: ConstColor.Fourthcolor,
+    ),
+  ];
+
+  /// Transactions list shown after Categories section.
+  final List<HomeTransactionPreview> homeTransactionsPreview = [
+    HomeTransactionPreview(
+      title: 'Groceries',
+      amount: HomeController.formatUsd(58.90),
+      icon: Icons.shopping_bag_outlined,
+      backgroundColor: ConstColor.Thirdcolor,
+    ),
+    HomeTransactionPreview(
+      title: 'Fuel Expense',
+      amount: HomeController.formatUsd(36.40),
+      icon: Icons.local_gas_station_outlined,
+      backgroundColor: ConstColor.Thirdcolor,
+    ),
+    HomeTransactionPreview(
+      title: 'Salary Income',
+      amount: HomeController.formatUsd(1200.00),
+      icon: Icons.payments_outlined,
+      backgroundColor: ConstColor.Fourthcolor,
+    ),
+    HomeTransactionPreview(
+      title: 'Freelance Income',
+      amount: HomeController.formatUsd(620.00),
       icon: Icons.laptop_mac_outlined,
       backgroundColor: ConstColor.Fourthcolor,
     ),

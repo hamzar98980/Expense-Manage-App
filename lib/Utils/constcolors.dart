@@ -8,8 +8,10 @@ class ConstColor {
   // ignore: constant_identifier_names
   static const Color Secondaycolor = Color(0xFFFFFFFF);
 
+  // ignore: constant_identifier_names — names requested for design tokens
   static const Color Thirdcolor = Color(0xFFF5F3F1);
 
+  // ignore: constant_identifier_names — names requested for design tokens
   static const Color Fourthcolor = Color(0xFFCBFD13);
 
   /// Bottom navigation (see app bottom bar design).
