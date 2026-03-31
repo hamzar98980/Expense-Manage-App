@@ -21,13 +21,15 @@ class WalletCardData {
 /// Home “Categories” grid row — expense uses [ConstColor.Thirdcolor], income [ConstColor.Fourthcolor].
 class HomeCategoryPreview {
   const HomeCategoryPreview({
-    required this.title,
+    required this.name,
+    required this.typeLabel,
     required this.amount,
     required this.icon,
     required this.backgroundColor,
   });
 
-  final String title;
+  final String name;
+  final String typeLabel;
   final String amount;
   final IconData icon;
   final Color backgroundColor;
@@ -38,15 +40,20 @@ class HomeCategoryPreview {
 class HomeTransactionPreview {
   const HomeTransactionPreview({
     required this.title,
+    required this.accountType,
     required this.amount,
     required this.icon,
     required this.backgroundColor,
+    required this.isIncome,
   });
 
   final String title;
+  /// Shown under the category title (e.g. Cash, Bank).
+  final String accountType;
   final String amount;
   final IconData icon;
   final Color backgroundColor;
+  final bool isIncome;
 }
 
 class HomeController extends GetxController {
@@ -96,25 +103,29 @@ class HomeController extends GetxController {
   /// First four categories on the home sheet (2×2). Expense → Thirdcolor, income → Fourthcolor.
   final List<HomeCategoryPreview> homeCategoryPreview = [
     HomeCategoryPreview(
-      title: 'Grocery Expense',
+      name: 'Grocery',
+      typeLabel: 'Expense',
       amount: HomeController.formatUsd(290.50),
       icon: Icons.shopping_bag_outlined,
       backgroundColor: ConstColor.Thirdcolor,
     ),
     HomeCategoryPreview(
-      title: 'Fuel Expense',
+      name: 'Fuel',
+      typeLabel: 'Expense',
       amount: HomeController.formatUsd(290.50),
       icon: Icons.local_gas_station_outlined,
       backgroundColor: ConstColor.Thirdcolor,
     ),
     HomeCategoryPreview(
-      title: 'Salary Income',
+      name: 'Salary',
+      typeLabel: 'Income',
       amount: HomeController.formatUsd(290.50),
       icon: Icons.payments_outlined,
       backgroundColor: ConstColor.Fourthcolor,
     ),
     HomeCategoryPreview(
-      title: 'Freelance Income',
+      name: 'Freelance',
+      typeLabel: 'Income',
       amount: HomeController.formatUsd(290.50),
       icon: Icons.laptop_mac_outlined,
       backgroundColor: ConstColor.Fourthcolor,
@@ -125,27 +136,35 @@ class HomeController extends GetxController {
   final List<HomeTransactionPreview> homeTransactionsPreview = [
     HomeTransactionPreview(
       title: 'Groceries',
+      accountType: 'Cash',
       amount: HomeController.formatUsd(58.90),
       icon: Icons.shopping_bag_outlined,
       backgroundColor: ConstColor.Thirdcolor,
+      isIncome: false,
     ),
     HomeTransactionPreview(
       title: 'Fuel Expense',
+      accountType: 'Debit',
       amount: HomeController.formatUsd(36.40),
       icon: Icons.local_gas_station_outlined,
       backgroundColor: ConstColor.Thirdcolor,
+      isIncome: false,
     ),
     HomeTransactionPreview(
       title: 'Salary Income',
+      accountType: 'Bank',
       amount: HomeController.formatUsd(1200.00),
       icon: Icons.payments_outlined,
       backgroundColor: ConstColor.Fourthcolor,
+      isIncome: true,
     ),
     HomeTransactionPreview(
       title: 'Freelance Income',
+      accountType: 'Bank',
       amount: HomeController.formatUsd(620.00),
       icon: Icons.laptop_mac_outlined,
       backgroundColor: ConstColor.Fourthcolor,
+      isIncome: true,
     ),
   ];
 

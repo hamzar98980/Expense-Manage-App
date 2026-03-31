@@ -31,7 +31,7 @@ class HomeScreen extends GetView<HomeController> {
   /// Card width as fraction of screen so the next card peeks (horizontal slider).
   static const _cardWidthFraction = 0.78;
   static const _categoryGridSpacing = 12.0;
-  static const _categoryCardAspect = 1.50;
+  static const _categoryCardAspect = 1.60;
 
   @override
   Widget build(BuildContext context) {
@@ -314,7 +314,8 @@ class HomeScreen extends GetView<HomeController> {
                                   final c =
                                       controller.homeCategoryPreview[index];
                                   return CategoryCard(
-                                    title: c.title,
+                                    name: c.name,
+                                    typeLabel: c.typeLabel,
                                     amount: c.amount,
                                     icon: c.icon,
                                     backgroundColor: c.backgroundColor,
@@ -366,9 +367,11 @@ class HomeScreen extends GetView<HomeController> {
                                   final t = controller.homeTransactionsPreview[index];
                                   return TransactionCell(
                                     title: t.title,
+                                    accountType: t.accountType,
                                     amount: t.amount,
                                     icon: t.icon,
                                     backgroundColor: t.backgroundColor,
+                                    isIncome: t.isIncome,
                                   );
                                 },
                               ),

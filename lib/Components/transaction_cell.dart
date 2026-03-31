@@ -6,22 +6,33 @@ class TransactionCell extends StatelessWidget {
   const TransactionCell({
     super.key,
     required this.title,
+    required this.accountType,
     required this.amount,
     required this.icon,
     required this.backgroundColor,
+    required this.isIncome,
   });
 
   final String title;
+  final String accountType;
   final String amount;
   final IconData icon;
   final Color backgroundColor;
+  /// When true, shows an upward arrow watermark; when false, downward (expense).
+  final bool isIncome;
+
+  static const _onCard = ConstColor.Primarycolor;
 
   @override
   Widget build(BuildContext context) {
+    final watermarkIcon =
+        isIncome ? Icons.arrow_upward_rounded : Icons.arrow_downward_rounded;
+
     return Material(
       color: backgroundColor,
       elevation: 2,
       shadowColor: Colors.black26,
+      clipBehavior: Clip.antiAlias,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(18),
         side: BorderSide(
@@ -29,49 +40,93 @@ class TransactionCell extends StatelessWidget {
           width: 1,
         ),
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                color: ConstColor.Primarycolor.withValues(alpha: 0.08),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                icon,
-                size: 20,
-                color: ConstColor.Primarycolor.withValues(alpha: 0.45),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontFamily: 'Montserrat',
-                  fontSize: 15,
-                  fontWeight: FontWeight.w500,
-                  color: ConstColor.Primarycolor,
+      child: Stack(
+        fit: StackFit.loose,
+        children: [
+          Positioned(
+            top: 0,
+            right: 0,
+            bottom: 0,
+            width: 96,
+            child: IgnorePointer(
+              child: Opacity(
+                opacity: 0.07,
+                child: FittedBox(
+                  fit: BoxFit.fitHeight,
+                  alignment: Alignment.centerRight,
+                  child: Icon(
+                    watermarkIcon,
+                    size: 512,
+                    color: _onCard,
+                  ),
                 ),
               ),
             ),
-            Text(
-              amount,
-              style: const TextStyle(
-                fontFamily: 'Montserrat',
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: ConstColor.Primarycolor,
-              ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: const BoxDecoration(
+                    color: ConstColor.Primarycolor,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    icon,
+                    size: 20,
+                    color: ConstColor.Secondaycolor,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontFamily: 'Montserrat',
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: ConstColor.Primarycolor,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        accountType,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontFamily: 'Montserrat',
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: ConstColor.Primarycolor.withValues(alpha: 0.55),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  amount,
+                  style: const TextStyle(
+                    fontFamily: 'Montserrat',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: ConstColor.Primarycolor,
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
