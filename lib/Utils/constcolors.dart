@@ -12,8 +12,8 @@ class ConstColor {
   static const Color Thirdcolor = Color(0xFFF5F3F1);
 
   // ignore: constant_identifier_names — names requested for design tokens
-  // static const Color Fourthcolor = Color(0xFF1D3D39);
-  static const Color Fourthcolor = Color(0xFFCBFD13);
+  static const Color Fourthcolor = Color(0xFF1D3D39);
+  // static const Color Fourthcolor = Color(0xFFCBFD13);
 
   /// Bottom navigation (see app bottom bar design).
   static const Color bottomNavActive = Color(0xFF1A1C24);

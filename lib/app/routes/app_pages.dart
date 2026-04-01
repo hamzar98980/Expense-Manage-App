@@ -8,6 +8,8 @@ import '../../features/accounts/accounts_binding.dart';
 import '../../features/accounts/accounts_screen.dart';
 import '../../features/accounts/create_account_binding.dart';
 import '../../features/accounts/create_account_screen.dart';
+import '../../features/stats/stats_binding.dart';
+import '../../features/stats/stats_screen.dart';
 import '../../features/signin/signin_binding.dart';
 import '../../features/signin/signin_screen.dart';
 import '../../features/signup/signup_binding.dart';
@@ -44,6 +46,11 @@ class AppPages {
       name: AppRoutes.home,
       page: HomeScreen.new,
       binding: HomeBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.stats,
+      page: StatsScreen.new,
+      binding: StatsBinding(),
     ),
     GetPage(
       name: AppRoutes.accounts,

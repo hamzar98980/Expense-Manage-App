@@ -26,6 +26,7 @@ class HomeCategoryPreview {
     required this.amount,
     required this.icon,
     required this.backgroundColor,
+    required this.textColor,
   });
 
   final String name;
@@ -33,6 +34,7 @@ class HomeCategoryPreview {
   final String amount;
   final IconData icon;
   final Color backgroundColor;
+  final Color textColor;
 }
 
 /// One transaction row preview for the home screen.
@@ -61,17 +63,32 @@ class HomeController extends GetxController {
   final RxInt bottomNavIndex = 0.obs;
 
   void selectBottomNav(int index) {
-    if (index == bottomNavIndex.value) return;
-    bottomNavIndex.value = index;
-
-    // Wallet tab -> Accounts screen (index mapping comes from
-    // AppBottomNavBar.defaultDestinations order).
-    if (index == 2) {
-      Get.toNamed(AppRoutes.accounts);
+    if (index == bottomNavIndex.value) {
+      if (index == 0 && Get.currentRoute == AppRoutes.home) return;
+      if (index == 1 && Get.currentRoute == AppRoutes.stats) return;
+      if (index == 2 && Get.currentRoute == AppRoutes.accounts) return;
       return;
     }
 
-    // TODO: Add navigation for Statistics / Profile when those screens exist.
+    bottomNavIndex.value = index;
+
+    switch (index) {
+      case 0:
+        if (Get.currentRoute != AppRoutes.home) {
+          Get.offNamed(AppRoutes.home);
+        }
+        break;
+      case 1:
+        if (Get.currentRoute != AppRoutes.stats) {
+          Get.toNamed(AppRoutes.stats);
+        }
+        break;
+      case 2:
+        Get.toNamed(AppRoutes.accounts);
+        break;
+      default:
+        break;
+    }
   }
 
   /// Placeholder until profile is loaded from auth/storage.
@@ -108,6 +125,7 @@ class HomeController extends GetxController {
       amount: HomeController.formatUsd(290.50),
       icon: Icons.shopping_bag_outlined,
       backgroundColor: ConstColor.Thirdcolor,
+      textColor: ConstColor.Primarycolor,
     ),
     HomeCategoryPreview(
       name: 'Fuel',
@@ -115,6 +133,8 @@ class HomeController extends GetxController {
       amount: HomeController.formatUsd(290.50),
       icon: Icons.local_gas_station_outlined,
       backgroundColor: ConstColor.Thirdcolor,
+      textColor: ConstColor.Primarycolor,
+
     ),
     HomeCategoryPreview(
       name: 'Salary',
@@ -122,6 +142,8 @@ class HomeController extends GetxController {
       amount: HomeController.formatUsd(290.50),
       icon: Icons.payments_outlined,
       backgroundColor: ConstColor.Fourthcolor,
+      textColor: ConstColor.Secondaycolor,
+
     ),
     HomeCategoryPreview(
       name: 'Freelance',
@@ -129,6 +151,7 @@ class HomeController extends GetxController {
       amount: HomeController.formatUsd(290.50),
       icon: Icons.laptop_mac_outlined,
       backgroundColor: ConstColor.Fourthcolor,
+      textColor: ConstColor.Secondaycolor,
     ),
   ];
 

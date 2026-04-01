@@ -232,7 +232,7 @@ class HomeScreen extends GetView<HomeController> {
                                       backgroundColor: ConstColor.Fourthcolor,
                                       leadingIcon:
                                           Icons.arrow_upward_rounded,
-                                      leadingIconColor: ConstColor.Secondaycolor,
+                                      leadingIconColor: ConstColor.Primarycolor,
                                       watermarkIcon:
                                           Icons.arrow_upward_rounded,
                                     ),
@@ -319,6 +319,7 @@ class HomeScreen extends GetView<HomeController> {
                                     amount: c.amount,
                                     icon: c.icon,
                                     backgroundColor: c.backgroundColor,
+                                    textColor: c.textColor,
                                   );
                                 },
                               ),
@@ -410,7 +411,10 @@ class _IncomeExpenseSummaryCard extends StatelessWidget {
   final IconData watermarkIcon;
 
   // static const _onCard = Colors.white;
-  static const _onCard = ConstColor.Primarycolor;
+  // static  _onCard = this.label == 'Income' ? ConstColor.Fourthcolor : ConstColor.Primarycolor;
+  Color get _onCard =>
+      label == 'Income' ? ConstColor.Secondaycolor : ConstColor.Primarycolor;
+
 
   @override
   Widget build(BuildContext context) {
@@ -460,7 +464,7 @@ class _IncomeExpenseSummaryCard extends StatelessWidget {
                   Container(
                     width: 36,
                     height: 36,
-                    decoration: const BoxDecoration(
+                    decoration:  BoxDecoration(
                       color: _onCard,
                       shape: BoxShape.circle,
                     ),
@@ -485,7 +489,7 @@ class _IncomeExpenseSummaryCard extends StatelessWidget {
                     amount,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style:  TextStyle(
                       fontFamily: 'Montserrat',
                       fontSize: 21,
                       fontWeight: FontWeight.w800,

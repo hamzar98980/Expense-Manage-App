@@ -21,7 +21,11 @@ class TransactionCell extends StatelessWidget {
   /// When true, shows an upward arrow watermark; when false, downward (expense).
   final bool isIncome;
 
-  static const _onCard = ConstColor.Primarycolor;
+  // static const _onCard = ConstColor.Primarycolor;
+  Color get _onCard =>
+      isIncome ? ConstColor.Secondaycolor : ConstColor.Primarycolor;
+
+  Color get iconColor => isIncome ? ConstColor.Primarycolor : ConstColor.Secondaycolor;
 
   @override
   Widget build(BuildContext context) {
@@ -71,14 +75,14 @@ class TransactionCell extends StatelessWidget {
                 Container(
                   width: 44,
                   height: 44,
-                  decoration: const BoxDecoration(
-                    color: ConstColor.Primarycolor,
+                  decoration:  BoxDecoration(
+                    color: _onCard,
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     icon,
                     size: 20,
-                    color: ConstColor.Secondaycolor,
+                    color: iconColor,
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -91,11 +95,11 @@ class TransactionCell extends StatelessWidget {
                         title,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
+                        style:  TextStyle(
                           fontFamily: 'Montserrat',
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
-                          color: ConstColor.Primarycolor,
+                          color: _onCard,
                         ),
                       ),
                       const SizedBox(height: 2),
@@ -107,7 +111,7 @@ class TransactionCell extends StatelessWidget {
                           fontFamily: 'Montserrat',
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
-                          color: ConstColor.Primarycolor.withValues(alpha: 0.55),
+                          color: _onCard.withValues(alpha: 0.55),
                         ),
                       ),
                     ],
@@ -116,11 +120,11 @@ class TransactionCell extends StatelessWidget {
                 const SizedBox(width: 8),
                 Text(
                   amount,
-                  style: const TextStyle(
+                  style:  TextStyle(
                     fontFamily: 'Montserrat',
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    color: ConstColor.Primarycolor,
+                    color: _onCard,
                   ),
                 ),
               ],
